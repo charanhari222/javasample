@@ -1,0 +1,12 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: openjdk8.x
+  build:
+    commands:
+      - mvn clean package
+  artifacts:
+   files:
+      - '**/*'
+   discard-paths: yes
