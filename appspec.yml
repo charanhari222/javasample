@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: **/*
+  - source: /
     destination: /temp
 permissions:
   - object: /temp
@@ -14,5 +14,5 @@ permissions:
       - directory
 hooks:
   ApplicationStart:
-    - location: scripts/application-start-hook.sh
+    - location: application-start-hook.sh
       timeout: 300
