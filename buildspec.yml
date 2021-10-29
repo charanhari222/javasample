@@ -10,5 +10,5 @@ artifacts:
    files:
       - '**/*'
       -  appspec.yml
-      - 'scripts/**/*'
+      -  application-start-hook.sh
    discard-paths: yes
