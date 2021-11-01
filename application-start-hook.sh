@@ -1,4 +1,5 @@
 #!/bin/bash
 
-sudo mv *.war apache-tomcat-9.0.54/webapps/
-sudo apache-tomcat-9.0.54/bin/startup.sh
+cd ../..
+cd temp/
+cp wss.war /home/ec2-user/apache-tomcat-9.0.54/webapps/
