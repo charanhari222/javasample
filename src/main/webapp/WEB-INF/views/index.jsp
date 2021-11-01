@@ -162,7 +162,7 @@
           </ul>
         </li>-->
 		<li class="header"></li>
-		<li class="header" style="color:white"><b>NETWORK CONFIGURATION</b></li>
+		<li class="header" style="color:black"><b>NETWORK CONFIGURATION</b></li>
 		<li><a href="#"><i class="fa fa-hdd-o"></i> <span>Add Device</span></a></li>
 		<li><a href="#"><i class="fa fa-table"></i> <span>View Devices</span></a></li>
 		
