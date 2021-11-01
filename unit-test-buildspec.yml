@@ -6,4 +6,4 @@ phases:
   build:
     commands:
       - mvn clean package
-      - mvn test
+      - mvn test UnitTest.java
