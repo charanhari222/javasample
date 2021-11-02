@@ -1,9 +1,4 @@
 version: 0.2
-env:
-  secrets-manager:
-    LOGIN: sonarqube-secret:sonartoken
-    HOST: sonarqube-secret:HOST
-    Project: sonarqube-secret:project
 phases:
   install:
     runtime-versions:
@@ -21,7 +16,7 @@ phases:
       - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
   build:
     commands:   
-      - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project
+      - mvn sonar:sonar -Dsonar.login=192f2c58a20b049386393379962c1b3fdae06c46 -Dsonar.host.url=http://localhost:9000/ -Dsonar.projectKey=awssonarexample
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
