@@ -7,7 +7,7 @@ env:
 phases:
   install:
     runtime-versions:
-      java: corretto8.x
+      java: corretto11
   pre_build:
     commands:
       - yum update -y
