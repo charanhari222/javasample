@@ -2,8 +2,8 @@ version: 0.2
 env:
   secrets-manager:
     LOGIN: sonarqube-secret:sonartoken
-    HOST: sonarqube-secret: HOST
-    Project: sonarqube-secret: project
+    HOST: sonarqube-secret:HOST
+    Project: sonarqube-secret:project
 phases:
   install:
     runtime-versions:
