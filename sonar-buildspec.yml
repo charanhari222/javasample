@@ -8,6 +8,7 @@ phases:
       - yum update -y
       - yum install -y jq
       - yum install -y ruby wget
+      - yum install unzip -y
       - wget http://www-eu.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
       - tar xzf apache-maven-3.5.4-bin.tar.gz
       - ln -s apache-maven-3.5.4 maven
@@ -16,7 +17,7 @@ phases:
       - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
   build:
     commands:   
-      - mvn sonar:sonar -Dsonar.login=192f2c58a20b049386393379962c1b3fdae06c46 -Dsonar.host.url=http://localhost:9000/ -Dsonar.projectKey=awssonarexample
+      - mvn sonar:sonar -Dsonar.login=0509856fd81ea530443388a7a684302db0c31327 -Dsonar.host.url=http://13.82.226.119:9000/sonar/ -Dsonar.projectKey=awssonarexample
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
