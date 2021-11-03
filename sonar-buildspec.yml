@@ -17,7 +17,7 @@ phases:
       - export PATH=$PATH:/sonar-scanner-3.3.0.1492-linux/bin/
   build:
     commands:   
-      - mvn sonar:sonar -Dsonar.login=0509856fd81ea530443388a7a684302db0c31327 -Dsonar.host.url=http://13.82.226.119:9000/sonar/ -Dsonar.projectKey=awssonarexample -Dsonar.coverage.jacoco.xmlReportPaths=*.xml -Dsonar.java.binaries=/temp/*.java
+      - mvn sonar:sonar -f pom.xml -Dsonar.login=0509856fd81ea530443388a7a684302db0c31327 -Dsonar.host.url=http://13.82.226.119:9000/sonar/ -Dsonar.projectKey=awssonarexample -Dsonar.coverage.jacoco.xmlReportPaths=*.xml -Dsonar.java.binaries=/temp/*.java
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
       - cat result.json
