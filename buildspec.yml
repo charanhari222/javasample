@@ -9,6 +9,6 @@ phases:
 artifacts:
    files:
       - '**/*'
-      -  appspec.yml
-      -  application-start-hook.sh
+      - appspec.yml
+      - application-start-hook.sh
    discard-paths: yes
