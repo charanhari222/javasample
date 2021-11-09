@@ -3,6 +3,7 @@ phases:
   install:
     runtime-versions:
       java: corretto11.x
+      java: corretto8.x
   pre_build:
     commands:
       - yum update -y
@@ -19,5 +20,7 @@ phases:
       - mvn clean package
   post_build:
     commands:
-      - echo $JAVA_HOME
+      - export JAVA_HOME="/usr/lib/jvm/java-11-amazon-corretto.x86_64"
+      - PATH=$JAVA_HOME/bin:$PATH
+      - export PATH=$PATH:$JAVA_HOME/bin
       - mvn sonar:sonar -Dsonar.login=0509856fd81ea530443388a7a684302db0c31327 -Dsonar.host.url=http://13.82.226.119:9000/sonar/ -Dsonar.projectKey=awssonarexample -Dsonar.coverage.jacoco.xmlReportPaths=*.xml
