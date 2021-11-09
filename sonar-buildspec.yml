@@ -19,5 +19,6 @@ phases:
     commands:
       - mvn clean package
   post_build:
-    commands:    
+    commands:
+      - echo $JAVA_HOME
       - mvn sonar:sonar -Dsonar.login=0509856fd81ea530443388a7a684302db0c31327 -Dsonar.host.url=http://13.82.226.119:9000/sonar/ -Dsonar.projectKey=awssonarexample -Dsonar.coverage.jacoco.xmlReportPaths=*.xml
