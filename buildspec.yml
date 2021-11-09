@@ -9,7 +9,6 @@ phases:
 artifacts:
    files:
       - '**/*'
-      - sonar-buildspec.yml
       - appspec.yml
       - application-start-hook.sh
    discard-paths: yes
