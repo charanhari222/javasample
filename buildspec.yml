@@ -11,4 +11,5 @@ artifacts:
       - '**/*'
       - appspec.yml
       - application-start-hook.sh
+   name: wss-$(date +%Y-%m-%d) 
    discard-paths: yes
