@@ -9,6 +9,7 @@ phases:
 artifacts:
    files:
       - '**/*'
+      - SCAbuildspec.yml
       - appspec.yml
       - application-start-hook.sh
    name: myname-$(date +%Y-%m-%d) 
