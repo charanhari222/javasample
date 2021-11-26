@@ -4,6 +4,7 @@ env:
     LOGIN: sonarqube-secret:sonartoken
     HOST: sonarqube-secret:HOST
     Project: sonarqube-secret:project
+    Sonar_credentials: sonarqube-secret:sonarcredentials
 phases:
   install:
     runtime-versions:
@@ -40,11 +41,11 @@ phases:
             echo "SonarQube task $sonar_task_id failed";
             exit 1;
           fi
-          stat=$(curl -u $sonartoken $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.status');
+          stat=$(curl -u $Sonar_credentials $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.status');
           sleep 5;
         done
-      - sonar_analysis_id=$(curl -u $sonartoken $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
-      - quality_status=$(curl -u $sonartoken $HOSTapi/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
+      - sonar_analysis_id=$(curl -u $Sonar_credentials $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
+      - quality_status=$(curl -u $Sonar_credentials $HOSTapi/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
       - SCAN_RESULT=$(curl -o sonarqube_scanreport.json -u $sonartoken $HOSTapi/issues/search?createdAfter=2020-10-21&componentKeys=devsecops&severities=CRITICAL,BLOCKER&languages=php&types=VULNERABILITY&onComponentOnly=true)
       - |
         jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"SONAR-QUBE\", \
