@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /temp
+    destination: /java
 permissions:
-  - object: /temp
+  - object: /java
     pattern: '**'
     mode: '0755'
     owner: root
