@@ -30,5 +30,29 @@ phases:
       - export PATH=$PATH:$JAVA_HOME/bin
       - echo $JAVA_HOME
       - pwd
-      - ./sonar-scanner-4.4.0.2170-linux/bin/sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.exclusions=src/** > sonarqube_scanreport.json
+      - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project > sonarqube_scanreport.json
       - cat sonarqube_scanreport.json
+      - sonar_link=$(cat sonarqube_scanreport.json | egrep -o "you can browse http://[^, ]+")
+      - sonar_task_id=$(cat sonarqube_scanreport.json | egrep -o "task\?id=[^ ]+" | cut -d'=' -f2)
+      # Allow time for SonarQube background task to complete
+      - |
+        stat="PENDING";
+        while [ "$stat" != "SUCCESS" ]; do
+          if [ $stat = "FAILED" ] || [ $stat = "CANCELLED" ]; then
+            echo "SonarQube task $sonar_task_id failed";
+            exit 1;
+          fi
+          stat=$(curl -u $sonartoken $HOST/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
+          sleep 5;
+        done
+      - sonar_analysis_id=$(curl -u $sonartoken $HOST/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
+      - quality_status=$(curl -u $sonartoken $HOST/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
+      - SCAN_RESULT=$(curl -o sonarqube_scanreport.json -u $sonartoken $HOST/api/issues/search?createdAfter=2020-10-21&componentKeys=devsecops&severities=CRITICAL,BLOCKER&languages=php&types=VULNERABILITY&onComponentOnly=true)
+      - |
+        jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"SONAR-QUBE\", \
+        \"createdAt\": $(date +\"%Y-%m-%dT%H:%M:%S.%3NZ\"), \"source_repository\": env.CODEBUILD_SOURCE_REPO_URL, \
+        \"source_branch\": env.CODEBUILD_SOURCE_VERSION, \
+        \"build_id\": env.CODEBUILD_BUILD_ID, \
+        \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
+        \"report\": . }" sonarqube_scanreport.json > payload.json
+      - echo payload.json
