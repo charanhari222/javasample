@@ -30,6 +30,7 @@ phases:
       - PATH=$JAVA_HOME/bin:$PATH
       - export PATH=$PATH:$JAVA_HOME/bin
       - echo $JAVA_HOME
+      - echo $HOST
       - ./sonar-scanner-4.4.0.2170-linux/bin/sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.java.binaries=./target/classes > sonarqube_scanreport.json
       - sonar_link=$(cat sonarqube_scanreport.json | egrep -o "you can browse http://[^, ]+")
       - sonar_task_id=$(cat sonarqube_scanreport.json | egrep -o "task\?id=[^ ]+" | cut -d'=' -f2)
@@ -41,12 +42,12 @@ phases:
             echo "SonarQube task $sonar_task_id failed";
             exit 1;
           fi
-          stat=$(curl -u $Sonar_credentials $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.status');
+          stat=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
           sleep 5;
         done
-      - sonar_analysis_id=$(curl -u $Sonar_credentials $HOSTapi/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
-      - quality_status=$(curl -u $Sonar_credentials $HOSTapi/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
-      - SCAN_RESULT=$(curl -o sonarqube_scanreport.json -u $sonartoken $HOSTapi/issues/search?createdAfter=2020-10-21&componentKeys=devsecops&severities=CRITICAL,BLOCKER&languages=php&types=VULNERABILITY&onComponentOnly=true)
+      - sonar_analysis_id=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
+      - quality_status=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
+      - SCAN_RESULT=$(curl -o sonarqube_scanreport.json -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/issues/search?createdAfter=2020-10-21&componentKeys=devsecops&severities=CRITICAL,BLOCKER&languages=php&types=VULNERABILITY&onComponentOnly=true)
       - |
         jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"SONAR-QUBE\", \
         \"createdAt\": $(date +\"%Y-%m-%dT%H:%M:%S.%3NZ\"), \"source_repository\": env.CODEBUILD_SOURCE_REPO_URL, \
