@@ -55,4 +55,5 @@ phases:
         \"build_id\": env.CODEBUILD_BUILD_ID, \
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" sonarqube_scanreport.json > payload.json
-      - echo payload.json
+      - |
+      - cat payload.json
