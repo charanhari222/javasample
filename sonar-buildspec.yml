@@ -56,7 +56,6 @@ phases:
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" sonarqube_scanreport.json > payload.json
       - |
-      - cat payload.json
         if [ $quality_status = "ERROR" ] || [ $quality_status = "WARN" ]; then
           aws lambda invoke --function-name ImportVulToSecurityHub --payload file://payload.json sonarqube_scan_report.json && echo "LAMBDA_SUCCEDED" || echo "LAMBDA_FAILED";
           echo "in quality_status ERROR or WARN condition"
