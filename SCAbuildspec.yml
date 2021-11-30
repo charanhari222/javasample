@@ -15,8 +15,6 @@ phases:
       - $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh --project "wordpress" --format JSON --prettyPrint --enableExperimental --scan $CODEBUILD_SRC_DIR --exclude '$CODEBUILD_SRC_DIR/depedency-check/'
       - echo "OWASP dependency check analysis status is completed..."; 
       - high_risk_dependency=$( cat dependency-check-report.json | grep -c "HIGHEST" )
-  post_build:
-    commands:
       - | 
         jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"OWASP-Dependency-Check\", \
         \"createdAt\": $(date +\"%Y-%m-%dT%H:%M:%S.%3NZ\"), \"source_repository\": env.CODEBUILD_SOURCE_REPO_URL, \
@@ -25,11 +23,11 @@ phases:
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" dependency-check-report.json > payload.json
       - |
+  post_build:
+    commands:
+      - echo "post_build is done"
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
       - payload.json
     file-format: json
-artifacts:
-  type: zip
-  files: '**/*'
