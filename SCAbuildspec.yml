@@ -25,4 +25,8 @@ phases:
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" dependency-check-report.json > payload.json
       - |
-      - cat payload.json
+reports:
+  arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
+    files:
+      - payload.json
+    file-format: json
