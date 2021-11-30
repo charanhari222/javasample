@@ -5,8 +5,8 @@ phases:
       - echo "install phase....."
   pre_build:
     commands:
-      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.0.5/dependency-check-6.0.5-release.zip
-      - unzip dependency-check-6.0.5-release.zip
+      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip
+      - unzip dependency-check-6.5.0-release.zip
       - chmod -R 775 $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh
       - echo "stage pre_build completed"
   build:
@@ -25,3 +25,4 @@ phases:
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" dependency-check-report.json > payload.json
       - |
+      - cat payload.json
