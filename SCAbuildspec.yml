@@ -30,3 +30,6 @@ reports:
     files:
       - payload.json
     file-format: json
+artifacts:
+  type: zip
+  files: '**/*'
