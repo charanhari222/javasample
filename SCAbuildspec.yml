@@ -10,8 +10,8 @@ phases:
       - chmod -R 775 $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh
       - echo "stage pre_build completed"
   build:
-    commands: 
-      - cd dependency-check/bin
+    commands:
+      - pwd
       - $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh --project "wordpress" --format JSON --prettyPrint --enableExperimental --scan $CODEBUILD_SRC_DIR --exclude '$CODEBUILD_SRC_DIR/depedency-check/'
       - ls -ltr
       - echo "OWASP dependency check analysis status is completed..."; 
@@ -24,6 +24,7 @@ phases:
         \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
         \"report\": . }" dependency-check-report.json > payload.json
       - |
+      - ls -ltr
   post_build:
     commands:
       - echo "post_build is done"
