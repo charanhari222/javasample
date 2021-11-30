@@ -31,4 +31,5 @@ reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
       - payload.json
+      - dependency-check-report.json
     file-format: json
