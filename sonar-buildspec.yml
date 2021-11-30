@@ -67,7 +67,7 @@ phases:
           exit 1;
         fi
 reports:
-  my-analysis-reports:
+  arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports
     files:
       - sonarqube_scan_report.json
     file-format: json       
