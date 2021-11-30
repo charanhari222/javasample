@@ -1,44 +1,28 @@
----
 version: 0.2
-
 phases:
   install:
-    runtime-versions:
-     java: corretto11
     commands:
-      - echo Installing OWASP Dependency Check SCA Tool - `pwd`
-      - gpg --keyserver hkp://keys.gnupg.net --recv-keys F9514E84AE3708288374BBBE097586CFEA37F9A6      
-      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.2/dependency-check-6.1.2-release.zip 
-      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.2/dependency-check-6.1.2-release.zip.asc
-      - gpg --verify dependency-check-*-release.zip.asc
-      - unzip dependency-check-*-release.zip
-      - rm -rf dependency-check-*-release.zip
-      - export PATH=dependency-check/bin:$PATH        
+      - echo "install phase....."
+  pre_build:
+    commands:
+      - composer install
+      - wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.0.5/dependency-check-6.0.5-release.zip
+      - unzip dependency-check-6.0.5-release.zip
+      - chmod -R 775 $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh
+      - echo "stage pre_build completed"
   build:
+    commands: 
+      - cd dependency-check/bin
+      - $CODEBUILD_SRC_DIR/dependency-check/bin/dependency-check.sh --project "wordpress" --format JSON --prettyPrint --enableExperimental --scan $CODEBUILD_SRC_DIR --exclude '$CODEBUILD_SRC_DIR/depedency-check/'
+      - echo "OWASP dependency check analysis status is completed..."; 
+      - high_risk_dependency=$( cat dependency-check-report.json | grep -c "HIGHEST" )
+  post_build:
     commands:
-      - echo Starting OWASP Dependency Check scanning `date` in `pwd`    
-      - mkdir -p nvd  # Will store nvd here
-      - pwd
-      - ls -l 
+      - | 
+        jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"OWASP-Dependency-Check\", \
+        \"createdAt\": $(date +\"%Y-%m-%dT%H:%M:%S.%3NZ\"), \"source_repository\": env.CODEBUILD_SOURCE_REPO_URL, \
+        \"source_branch\": env.CODEBUILD_SOURCE_VERSION, \
+        \"build_id\": env.CODEBUILD_BUILD_ID, \
+        \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
+        \"report\": . }" dependency-check-report.json > payload.json
       - |
-        dependency-check.sh \
-          --project my-project \
-          -s ./src \
-          -f JUNIT \
-          --disableNuspec \
-          --disableAssembly \
-          -d nvd \
-          --failOnCVSS $FAIL_ON_CVSS \
-# Caching the nvd database so each run doesn't download the
-# entire nvd
-cache:
-  paths:
-    - nvd/**/*
-reports:
-  SCASecurityReports:
-    files:
-      - dependency-check-junit.xml
-    discard-paths: 'yes'
-    file-format: JunitXml
-artifacts: 
-  files: '*junit.xml'
