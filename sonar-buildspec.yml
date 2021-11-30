@@ -66,6 +66,11 @@ phases:
           echo "in quality_status  unexpected condition"
           exit 1;
         fi
+reports:
+  my-analysis-reports:
+    files:
+      - sonarqube_scan_report.json
+    file-format: json       
 artifacts:
   type: zip
   files: '**/*'
