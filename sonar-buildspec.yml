@@ -69,7 +69,7 @@ phases:
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
-      - sonarqube_scan_report.json
+      - payload.json
     file-format: json       
 artifacts:
   type: zip
