@@ -34,7 +34,7 @@ phases:
       - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project
       - ls -ltr
 reports:
-  arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
+  arn:aws:codebuild:ap-south-1:033698541909:report-group/codecoverage:
     files:
       - target/jacoco-ut/jacoco.xml
     file-format: xml       
