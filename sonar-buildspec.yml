@@ -32,6 +32,7 @@ phases:
       - echo $JAVA_HOME
       - echo $HOST
       - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project
+      - ls -ltr
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
