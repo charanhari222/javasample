@@ -36,8 +36,8 @@ phases:
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/codecoverage:
     files:
-      - target/jacoco-ut/jacoco.xml
-    file-format: "jacocoxml"       
+      - sonarreport.json
+    file-format: "SimpleCov JSON"       
 artifacts:
   type: zip
   files: '**/*'
