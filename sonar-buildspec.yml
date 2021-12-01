@@ -37,7 +37,7 @@ reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/codecoverage:
     files:
       - sonarreport.json
-    file-format: "SimpleCov JSON"       
+    file-format: "sonarreport.json"       
 artifacts:
   type: zip
   files: '**/*'
