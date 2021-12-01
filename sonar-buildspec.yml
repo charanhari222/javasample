@@ -31,46 +31,12 @@ phases:
       - export PATH=$PATH:$JAVA_HOME/bin
       - echo $JAVA_HOME
       - echo $HOST
-      - ./sonar-scanner-4.4.0.2170-linux/bin/sonar-scanner -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.java.binaries=./target/classes -Dsonar.sources=src -Dsonar.issuesReport.html.enable=true > sonarqube_scanreport.json
-      - sonar_link=$(cat sonarqube_scanreport.json | egrep -o "you can browse http://[^, ]+")
-      - sonar_task_id=$(cat sonarqube_scanreport.json | egrep -o "task\?id=[^ ]+" | cut -d'=' -f2)
-      # Allow time for SonarQube background task to complete
-      - |
-        stat="PENDING";
-        while [ "$stat" != "SUCCESS" ]; do
-          if [ $stat = "FAILED" ] || [ $stat = "CANCELLED" ]; then
-            echo "SonarQube task $sonar_task_id failed";
-            exit 1;
-          fi
-          stat=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
-          sleep 5;
-        done
-      - sonar_analysis_id=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
-      - quality_status=$(curl -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
-      - SCAN_RESULT=$(curl -o sonarqube_scanreport.json -u $Sonar_credentials http://13.82.226.119:9000/sonar/api/issues/search?createdAfter=2020-10-21&componentKeys=devsecops&severities=CRITICAL,BLOCKER&languages=php&types=VULNERABILITY&onComponentOnly=true)
-      - |
-        jq "{ \"messageType\": \"CodeScanReport\", \"reportType\": \"SONAR-QUBE\", \
-        \"createdAt\": $(date +\"%Y-%m-%dT%H:%M:%S.%3NZ\"), \"source_repository\": env.CODEBUILD_SOURCE_REPO_URL, \
-        \"source_branch\": env.CODEBUILD_SOURCE_VERSION, \
-        \"build_id\": env.CODEBUILD_BUILD_ID, \
-        \"source_commitid\": env.CODEBUILD_RESOLVED_SOURCE_VERSION, \
-        \"report\": . }" sonarqube_scanreport.json > payload.json
-      - |
-        if [ $quality_status = "ERROR" ] || [ $quality_status = "WARN" ]; then
-          aws lambda invoke --function-name ImportVulToSecurityHub --payload file://payload.json sonarqube_scan_report.json && echo "LAMBDA_SUCCEDED" || echo "LAMBDA_FAILED";
-          echo "in quality_status ERROR or WARN condition"
-          exit 1;
-        elif [ $quality_status = "OK" ]; then
-          echo "in quality_status OK condition"
-        else
-          echo "in quality_status  unexpected condition"
-          exit 1;
-        fi
+      - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
-      - payload.json
-    file-format: json       
+      - testng-results.xml
+    file-format: xml       
 artifacts:
   type: zip
   files: '**/*'
