@@ -36,7 +36,7 @@ phases:
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
-      - testng-results.xml
+      - target/surefire-reports/testng-results.xml
     file-format: xml       
 artifacts:
   type: zip
