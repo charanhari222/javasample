@@ -37,7 +37,7 @@ reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/codecoverage:
     files:
       - target/jacoco-ut/jacoco.xml
-    file-format: xml       
+    file-format: "jacocoxml"       
 artifacts:
   type: zip
   files: '**/*'
