@@ -36,7 +36,7 @@ phases:
 reports:
   arn:aws:codebuild:ap-south-1:033698541909:report-group/analysis-reports:
     files:
-      - target/surefire-reports/TEST-TestSuite.xml
+      - target/jacoco-ut/jacoco.xml
     file-format: xml       
 artifacts:
   type: zip
