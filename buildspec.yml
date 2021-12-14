@@ -1,4 +1,8 @@
 version: 0.2
+env:
+  secrets-manager:
+    ec2key: secretfileforec2:charan_pem
+    newpem: pemfilebastion
 phases:
   install:
     runtime-versions:
@@ -6,6 +10,12 @@ phases:
   build:
     commands:
       - mvn clean package
+      - echo $newpem > test.pem
+      - ls -l test.pem
+      - chmod 400 test.pem
+      - aws ssm get-parameter --name pemfile --with-decryption --output text --query Parameter.Value > new.pem
+      - chmod 400 new.pem
+      - ssh -i test.pem -o StrictHostKeyChecking=no ec2-user@13.234.117.189 'echo $HOSTNAME'
 artifacts:
    files:
       - '**/*'
